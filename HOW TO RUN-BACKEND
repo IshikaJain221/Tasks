@@ -1,0 +1,42 @@
+## 1. Setup and Run
+
+### Prerequisites
+- Node.js 18+
+- PostgreSQL 13+ running locally (or a connection string to a hosted instance)
+
+### Steps
+
+```bash
+the links-# Server:    http://localhost:3000
+# API docs:  http://localhost:3000/api-docs
+
+
+
+# 1. Clone and install
+git clone <repo-url>
+cd student-course-management
+npm install
+
+# 2. Create the database
+createdb student_course_db
+# or: psql -U postgres -c "CREATE DATABASE student_course_db;"
+
+# 3. Configure environment
+cp .env.example .env
+# edit .env with your DB credentials and a JWT secret
+
+# 4. Run the schema + stored procedures
+psql -U postgres -d student_course_db -f sql/01_schema.sql
+psql -U postgres -d student_course_db -f sql/02_procedures.sql
+
+# 5. (Optional) Seed an admin user + sample courses
+npm run seed
+# creates admin@example.com / Admin@123 and 3 sample courses
+
+# 6. Start the server
+npm run dev      # with nodemon (auto-reload)
+# or
+npm start
+
+# Server:    http://localhost:3000
+# API docs:  http://localhost:3000/api-docs
