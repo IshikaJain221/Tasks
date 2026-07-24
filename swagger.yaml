@@ -1,0 +1,213 @@
+openapi: 3.0.3
+info:
+  title: Student and Course Management API
+  version: 1.0.0
+  description: >
+    Backend API for managing students and their associated courses,
+    with role-based access control (ADMIN, STUDENT).
+servers:
+  - url: /api
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Course:
+      type: object
+      properties:
+        course_id: { type: string, format: uuid }
+        course_name: { type: string }
+        course_code: { type: string }
+        course_duration: { type: integer, description: "Duration in weeks" }
+    Student:
+      type: object
+      properties:
+        student_id: { type: string, format: uuid }
+        first_name: { type: string }
+        last_name: { type: string }
+        email: { type: string }
+        phone: { type: string }
+        course:
+          $ref: '#/components/schemas/Course'
+
+paths:
+  /auth/register-admin:
+    post:
+      summary: Register a new admin user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string }
+                password: { type: string }
+      responses:
+        '201': { description: Created }
+
+  /auth/register-student:
+    post:
+      summary: Register a new student (creates student record + login)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [first_name, last_name, email, password]
+              properties:
+                first_name: { type: string }
+                last_name: { type: string }
+                email: { type: string }
+                phone: { type: string }
+                course_id: { type: string, format: uuid }
+                password: { type: string }
+      responses:
+        '201': { description: Created }
+
+  /auth/login:
+    post:
+      summary: Login and receive a JWT
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string }
+                password: { type: string }
+      responses:
+        '200': { description: OK }
+        '401': { description: Invalid credentials }
+
+  /courses:
+    get:
+      summary: List all courses (with enrolled student count)
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Course' }
+    post:
+      summary: Create a course (ADMIN only)
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [course_name, course_code, course_duration]
+              properties:
+                course_name: { type: string }
+                course_code: { type: string }
+                course_duration: { type: integer }
+      responses:
+        '201': { description: Created }
+        '409': { description: course_code already exists }
+
+  /courses/{id}:
+    get:
+      summary: Get course by ID
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK }
+        '404': { description: Not found }
+    put:
+      summary: Update a course (ADMIN only)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK }
+    delete:
+      summary: Delete a course (ADMIN only)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - name: cascade
+          in: query
+          schema: { type: boolean }
+          description: If true, unassigns enrolled students before deleting. Default false (restrict).
+      responses:
+        '204': { description: Deleted }
+        '409': { description: Course has enrolled students (restrict mode) }
+
+  /courses/{id}/students:
+    get:
+      summary: List students enrolled in a specific course
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK }
+
+  /students:
+    get:
+      summary: List all students with course info (ADMIN only)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: course_id
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Student' }
+    post:
+      summary: Create a student with course assignment (ADMIN only)
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [first_name, last_name, email]
+              properties:
+                first_name: { type: string }
+                last_name: { type: string }
+                email: { type: string }
+                phone: { type: string }
+                course_id: { type: string, format: uuid }
+      responses:
+        '201': { description: Created }
+        '404': { description: Referenced course does not exist }
+
+  /students/{id}:
+    get:
+      summary: Get student by ID (ADMIN, or STUDENT viewing own record)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK }
+        '403': { description: Forbidden }
+        '404': { description: Not found }
+    put:
+      summary: Update a student, optionally reassigning course (ADMIN only)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK }
+    delete:
+      summary: Delete a student (ADMIN only)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '204': { description: Deleted }
+        '404': { description: Not found }
