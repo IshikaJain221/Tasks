@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bare & Bloom — DIY or Brand, Your Skin's Choice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="bubble-field" aria-hidden="true">
+  <div class="bubble b1"><span class="charm droplet"></span></div>
+  <div class="bubble b2"><span class="charm petal"></span></div>
+  <div class="bubble b3"><span class="charm jar"></span></div>
+  <div class="bubble b4"><span class="charm sparkle">✦</span></div>
+  <div class="bubble b5"><span class="charm droplet small"></span></div>
+  <div class="bubble b6"><span class="charm petal small"></span></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+</div>
+
+<header class="site-header">
+  <a href="#top" class="logo">Bare <span>&amp;</span> Bloom</a>
+  <nav class="top-nav" id="topNav">
+    <a href="#topics">Topics</a>
+    <a href="#legend">DIY vs Brand</a>
+    <a href="#detail">Guide</a>
+  </nav>
+  <button class="nav-toggle" id="navToggle" aria-label="Open navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-eyebrow">A skincare library, sorted your way</p>
+    <h1>Every ritual,<br><em>two ways to get there.</em></h1>
+    <p class="hero-copy">Pick a concern below — face masks, serums, multani mitti packs, biotin boosts, and more. For each one, choose a kitchen-shelf DIY recipe or a dermat-recommended brand pick. No scrolling through forty tabs to find the one paragraph you needed.</p>
+    <div class="hero-legend" id="legend">
+      <span class="legend-item"><i class="dot dot-diy"></i> DIY recipe</span>
+      <span class="legend-item"><i class="dot dot-brand"></i> Brand pick</span>
+    </div>
+  </section>
+
+  <!-- TOPIC GRID -->
+  <section class="topics-section" id="topics">
+    <p class="section-eyebrow">Choose a topic</p>
+    <h2>What's on your skin's mind today?</h2>
+    <div class="topic-grid" id="topicGrid"></div>
+  </section>
+
+  <!-- DETAIL PANEL -->
+  <section class="detail-section" id="detail">
+    <div class="detail-head">
+      <div class="detail-head-text">
+        <p class="section-eyebrow" id="detailEyebrow">Face Masks</p>
+        <h2 id="detailTitle">Brighten, calm, or deep-clean</h2>
+        <p class="detail-tagline" id="detailTagline"></p>
+      </div>
+      <div class="toggle-group" id="toggleGroup">
+        <button class="toggle-btn toggle-diy active" id="toggleDiy" data-mode="diy">DIY Recipe</button>
+        <button class="toggle-btn toggle-brand" id="toggleBrand" data-mode="brand">Brand Picks</button>
+      </div>
+    </div>
+    <p class="diy-caution" id="diyCaution" hidden></p>
+    <div class="card-grid" id="cardGrid"></div>
+  </section>
+
+  <footer class="site-footer">
+    <p>Bare &amp; Bloom · Patch-test anything new, DIY or not. Skin reacts differently for everyone.</p>
+  </footer>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
