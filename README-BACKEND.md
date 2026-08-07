@@ -1,6 +1,5 @@
 # Tasks
 
-This is SCIQUS TASK GIVEN TO ME 
 
 # Student and Course Management — Backend
 
